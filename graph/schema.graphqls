@@ -1,0 +1,72 @@
+  type Post {
+    id: ID!
+    author: String!
+    title: String!
+    content: String!
+    createdAt: String!
+    allowComments: Boolean!
+    comments(first: Int, after: String): CommentConnection!
+  }
+
+  type PostConnection{
+    edges: [PostEdge!]!
+    pageInfo: PageInfo!
+  }
+
+  type PostEdge{
+    node: Post!
+    cursor: String!
+  }
+
+  type PageInfo{
+    hasNextPage: Boolean!
+    hasPreviousPage: Boolean!
+    startCursor: String
+    endCursor: String
+  }
+
+  type Comment {
+    id: ID!
+    author: String!
+    content: String!
+    createdAt: String!
+    postId: ID!
+    post: Post!
+    parentId: ID
+    replies(first: Int, after: String): CommentConnection!
+  }
+
+  type CommentConnection {
+    edges: [CommentEdge!]!
+    pageInfo: PageInfo!
+  }
+
+  type CommentEdge {
+    cursor: String!
+    node: Comment!
+  }
+
+  type Query {
+    post(id: ID!): Post
+    posts(first: Int, after: String): PostConnection!
+    comment(id: ID!): Comment
+  }
+
+  type Mutation{
+    createPost(input: CreatePostInput!): Post!
+    createComment(input: CreateCommentInput!): Comment!
+  }
+
+  input CreatePostInput{
+    author: String!
+    title: String!
+    content: String!
+    allowComments: Boolean!
+  }
+
+  input CreateCommentInput{
+    postId: ID!
+    author: String!
+    content: String!
+    parentId: ID
+  }
