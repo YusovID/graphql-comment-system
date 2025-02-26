@@ -8,11 +8,10 @@ import (
 	"context"
 	"fmt"
 	"graphql-comment-system/graph/model"
+	inmemory "graphql-comment-system/pkg/data/in-memory"
 	"graphql-comment-system/pkg/validator"
 	"strings"
 	"time"
-
-	"github.com/google/uuid"
 )
 
 // Post is the resolver for the post field.
@@ -22,6 +21,47 @@ func (r *commentResolver) Post(ctx context.Context, obj *model.Comment) (*model.
 		return nil, fmt.Errorf("post with id %s not found: %w", obj.PostID, err)
 	}
 	return post, nil
+}
+
+// Replies is the resolver for the replies field.
+func (r *commentResolver) Replies(ctx context.Context, obj *model.Comment, first *int32, after *string) (*model.CommentConnection, error) {
+	var n = int32(10)
+	if first != nil {
+		n = int32(*first)
+	}
+	result, err := r.Resolver.CommentStore.GetRepliesForComment(ctx, obj.ID, n, after) // Используем новую функцию GetRepliesForComment
+	if err != nil {
+		return nil, err
+	}
+
+	var edges []*model.CommentEdge
+	for _, comment := range result.Comments { // result.Comments - это теперь ответы ПЕРВОГО уровня
+		edges = append(edges, &model.CommentEdge{
+			Cursor: comment.ID,
+			Node:   comment, // comment теперь содержит вложенное дерево ответов в поле Replies
+		})
+	}
+
+	pageInfo := &model.PageInfo{
+		HasNextPage: result.HasNextPage,
+		StartCursor: func() *string {
+			if len(edges) > 0 {
+				return &edges[0].Cursor
+			}
+			return nil
+		}(),
+		EndCursor: func() *string {
+			if len(edges) > 0 {
+				return &edges[len(edges)-1].Cursor
+			}
+			return nil
+		}(),
+	}
+
+	return &model.CommentConnection{
+		Edges:    edges,
+		PageInfo: pageInfo,
+	}, nil
 }
 
 // CreatePost is the resolver for the createPost field.
@@ -37,7 +77,9 @@ func (r *mutationResolver) CreatePost(ctx context.Context, input model.CreatePos
 	}
 
 	post := &model.Post{
-		ID:            uuid.NewString(),
+		//TODO: Use UUIDs for IDs
+
+		ID:            inmemory.GetNextPostID(),
 		Author:        input.Author,
 		Content:       input.Content,
 		Title:         input.Title,
@@ -61,12 +103,18 @@ func (r *mutationResolver) CreateComment(ctx context.Context, input model.Create
 	}
 
 	comment := &model.Comment{
-		ID:        uuid.NewString(),
+		//TODO: Use UUIDs for IDs
+		ID:        inmemory.GetNextCommentID(),
 		Author:    input.Author,
 		Content:   input.Content,
 		PostID:    input.PostID,
 		CreatedAt: time.Now().Format(time.RFC3339),
 	}
+
+	if input.ParentID != nil {
+		comment.ParentID = input.ParentID
+	}
+
 	r.Resolver.CommentStore.AddComment(ctx, comment)
 	return comment, nil
 }
@@ -92,8 +140,18 @@ func (r *postResolver) Comments(ctx context.Context, obj *model.Post, first *int
 
 	pageInfo := &model.PageInfo{
 		HasNextPage: result.HasNextPage,
-		StartCursor: &edges[0].Cursor,
-		EndCursor:   &edges[len(edges)-1].Cursor,
+		StartCursor: func() *string {
+			if len(edges) > 0 {
+				return &edges[0].Cursor
+			}
+			return nil
+		}(),
+		EndCursor: func() *string {
+			if len(edges) > 0 {
+				return &edges[len(edges)-1].Cursor
+			}
+			return nil
+		}(),
 	}
 
 	return &model.CommentConnection{

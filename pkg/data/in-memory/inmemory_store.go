@@ -18,6 +18,7 @@ type CommentStore interface {
 	GetCommentByID(ctx context.Context, id string) (*model.Comment, error)
 	GetCommentsForPost(ctx context.Context, postID string, first int32, afterCursor *string) (CommentsResult, error)
 	AddComment(ctx context.Context, comment *model.Comment)
+	GetRepliesForComment(ctx context.Context, commentID string, first int32, afterCursor *string) (CommentsResult, error)
 }
 
 // InMemoryStore implements PostStore and CommentStore using in-memory data
@@ -30,7 +31,6 @@ type InMemoryStore struct {
 // Ensure InMemoryStore actually implements the interfaces at compile time
 var _ PostStore = &InMemoryStore{}
 var _ CommentStore = &InMemoryStore{}
-
 
 // Implement PostStore methods for InMemoryStore
 
@@ -46,7 +46,6 @@ func (s *InMemoryStore) AddPost(ctx context.Context, post *model.Post) {
 	AddPost(ctx, post) // Directly call existing functions
 }
 
-
 // Implement CommentStore methods for InMemoryStore
 
 func (s *InMemoryStore) GetCommentByID(ctx context.Context, id string) (*model.Comment, error) {
@@ -59,4 +58,8 @@ func (s *InMemoryStore) GetCommentsForPost(ctx context.Context, postID string, f
 
 func (s *InMemoryStore) AddComment(ctx context.Context, comment *model.Comment) {
 	AddComment(ctx, comment) // Directly call existing functions
+}
+
+func (s *InMemoryStore) GetRepliesForComment(ctx context.Context, commentID string, first int32, afterCursor *string) (CommentsResult, error) {
+	return GetRepliesForComment(ctx, commentID, first, afterCursor) // Directly call existing functions
 }

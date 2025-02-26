@@ -5,12 +5,16 @@ import (
 	"fmt"
 	"graphql-comment-system/graph/model"
 	"sort"
+	"strconv"
 	"sync"
 	"time"
 )
 
 var comments map[string]*model.Comment
 var commentsMutex sync.RWMutex
+
+// TODO: Удалить
+var commentID int = 3
 
 type CommentsResult struct {
 	Comments    []*model.Comment
@@ -116,4 +120,63 @@ func AddComment(ctx context.Context, comment *model.Comment) {
 	commentsMutex.Lock()
 	defer commentsMutex.Unlock()
 	comments[comment.ID] = comment
+}
+
+func GetRepliesForComment(ctx context.Context, parentID string, first int32, afterCursor *string) (CommentsResult, error) {
+	commentsMutex.RLock()
+	defer commentsMutex.RUnlock()
+
+	filtered := make([]*model.Comment, 0)
+	for _, comment := range comments {
+		if comment.ParentID != nil && *comment.ParentID == parentID {
+			filtered = append(filtered, comment)
+		}
+	}
+
+	sort.Slice(filtered, func(i, j int) bool {
+		t1, err1 := time.Parse(time.RFC3339, filtered[i].CreatedAt)
+		t2, err2 := time.Parse(time.RFC3339, filtered[j].CreatedAt)
+		if err1 != nil || err2 != nil {
+			return false
+		}
+		return t1.Before(t2)
+	})
+
+	for _, c := range filtered {
+		_, err := time.Parse(time.RFC3339, c.CreatedAt)
+		if err != nil {
+			return CommentsResult{}, fmt.Errorf("error parsing date: %w", err)
+		}
+	}
+
+	start := 0
+	if afterCursor != nil {
+		for i, c := range filtered {
+			if c.ID == *afterCursor {
+				start = i + 1
+				break
+			}
+		}
+	}
+
+	end := start + int(first)
+	if end > len(filtered) {
+		end = len(filtered)
+	}
+
+	commentSlice := filtered[start:end]
+
+	hasNextPage := end < len(filtered)
+
+	return CommentsResult{
+		Comments:    commentSlice,
+		HasNextPage: hasNextPage,
+	}, nil
+}
+
+// TODO: Удалить
+func GetNextCommentID() string {
+	ID := strconv.Itoa(commentID)
+	commentID++
+	return ID
 }

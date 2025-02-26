@@ -13,3 +13,5 @@ type Resolver struct {
 func NewResolver(postStore inmemory.PostStore, commentStore inmemory.CommentStore) *Resolver {
 	return &Resolver{PostStore: postStore, CommentStore: commentStore}
 }
+
+

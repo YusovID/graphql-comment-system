@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"graphql-comment-system/graph/model"
 	"sort"
+	"strconv"
 	"sync"
 	"time"
 )
@@ -16,6 +17,8 @@ type PostsResult struct {
 
 var posts map[string]*model.Post
 var postsMutex sync.RWMutex
+//TODO: Удалить
+var postID int = 2
 
 func InitializePosts() {
 	posts = make(map[string]*model.Post)
@@ -58,7 +61,6 @@ func GetPosts(ctx context.Context, first int32, afterCursor *string) (PostsResul
 	defer postsMutex.RUnlock()
 
 	var validPosts []*model.Post
-	// var invalidPosts []*model.Post // Больше не нужны, если мы возвращаем ошибку
 
 	for _, post := range posts {
 		_, err := time.Parse(time.RFC3339, post.CreatedAt)
@@ -107,4 +109,11 @@ func AddPost(ctx context.Context, post *model.Post) {
 	postsMutex.Lock()
 	defer postsMutex.Unlock()
 	posts[post.ID] = post
+}
+
+//TODO: Удалить
+func GetNextPostID() string {
+	ID := strconv.Itoa(postID)
+	commentID++
+	return ID
 }

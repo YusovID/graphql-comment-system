@@ -161,3 +161,12 @@ models:
     fields:
       post:
         resolver: true
+      replies:
+        resolver: true
+  Reply:
+    fields:
+      comment:
+        resolver: true
+      replies:
+        resolver: true
+
