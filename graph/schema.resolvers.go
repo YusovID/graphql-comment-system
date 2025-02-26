@@ -8,6 +8,8 @@ import (
 	"context"
 	"fmt"
 	"graphql-comment-system/graph/model"
+	"graphql-comment-system/pkg/validator"
+	"strings"
 	"time"
 
 	"github.com/google/uuid"
@@ -24,7 +26,15 @@ func (r *commentResolver) Post(ctx context.Context, obj *model.Comment) (*model.
 
 // CreatePost is the resolver for the createPost field.
 func (r *mutationResolver) CreatePost(ctx context.Context, input model.CreatePostInput) (*model.Post, error) {
-	//TODO: Implement validation
+	// Валидация входных данных
+	validationErrors := validator.ValidateCreatePostInput(ctx, input.Title, input.Author, input.Content)
+	if len(validationErrors) > 0 {
+		var errorMessages []string
+		for _, err := range validationErrors {
+			errorMessages = append(errorMessages, err.Error())
+		}
+		return nil, fmt.Errorf("validation errors: %s", strings.Join(errorMessages, "; "))
+	}
 
 	post := &model.Post{
 		ID:            uuid.NewString(),
@@ -40,7 +50,15 @@ func (r *mutationResolver) CreatePost(ctx context.Context, input model.CreatePos
 
 // CreateComment is the resolver for the createComment field.
 func (r *mutationResolver) CreateComment(ctx context.Context, input model.CreateCommentInput) (*model.Comment, error) {
-	//TODO: Implement validation
+	// Валидация входных данных
+	validationErrors := validator.ValidateCreateCommentInput(ctx, input.Author, input.Content, input.PostID, input.ParentID)
+	if len(validationErrors) > 0 {
+		var errorMessages []string
+		for _, err := range validationErrors {
+			errorMessages = append(errorMessages, err.Error())
+		}
+		return nil, fmt.Errorf("validation errors: %s", strings.Join(errorMessages, "; "))
+	}
 
 	comment := &model.Comment{
 		ID:        uuid.NewString(),
