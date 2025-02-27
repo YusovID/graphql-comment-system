@@ -4,7 +4,7 @@ package validator
 import (
 	"context"
 	"fmt"
-	"graphql-comment-system/pkg/data"
+	"graphql-comment-system/app/pkg/data"
 	"strings"
 )
 

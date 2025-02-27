@@ -3,7 +3,7 @@ package inmemory
 import (
 	"context"
 	"fmt"
-	"graphql-comment-system/graph/model"
+	"graphql-comment-system/app/graph/model"
 	"sort"
 	"sync"
 	"time"

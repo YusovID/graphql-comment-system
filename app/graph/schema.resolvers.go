@@ -7,8 +7,8 @@ package graph
 import (
 	"context"
 	"fmt"
-	"graphql-comment-system/graph/model"
-	"graphql-comment-system/pkg/validator"
+	"graphql-comment-system/app/graph/model"
+	"graphql-comment-system/app/pkg/validator"
 	"strings"
 	"time"
 

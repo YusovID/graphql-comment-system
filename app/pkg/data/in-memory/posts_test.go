@@ -2,7 +2,7 @@ package inmemory
 
 import (
 	"context"
-	"graphql-comment-system/graph/model"
+	"graphql-comment-system/app/graph/model"
 	"testing"
 	"time"
 )

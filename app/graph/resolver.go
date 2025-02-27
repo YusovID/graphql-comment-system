@@ -1,7 +1,7 @@
 package graph
 
 import (
-	"graphql-comment-system/pkg/data"
+	"graphql-comment-system/app/pkg/data"
 )
 
 // This file will not be regenerated automatically.

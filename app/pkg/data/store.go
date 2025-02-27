@@ -3,7 +3,7 @@ package data
 
 import (
 	"context"
-	"graphql-comment-system/graph/model"
+	"graphql-comment-system/app/graph/model"
 )
 
 // PostStore interface defines methods for interacting with post data.

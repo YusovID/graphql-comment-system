@@ -3,7 +3,7 @@ package postgres
 import (
 	"context"
 	"fmt"
-	"graphql-comment-system/graph/model"
+	"graphql-comment-system/app/graph/model"
 	"sort"
 	"time"
 
