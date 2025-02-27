@@ -35,14 +35,15 @@ query GetPost{
 
 Подключение к базе данных:
 
-psql -U {username} -d {database_name}
+psql -U user -d graphql-comment-system
 
-Собрать контейнер:
+Собрать контейнер и запустить контейнер:
 
-docker build -t graphql-comment-system .
+docker build -t graphql-comment-system:local .
+docker network create my-network     
+docker run --name postgres-db --net my-network -p 5432:5432 -e POSTGRES_USER=user -e POSTGRES_PASSWORD=password -e POSTGRES_DB=graphql-comment-system -d postgres:latest
+docker run --name graphql-app --net my-network --env-file app/.env -p 50051:50051 graphql-comment-system:local       
 
-Запустить контейнер:
 
-docker run -p 8080:8080 -e STORAGE_TYPE=inmemory graphql-comment-system
 
 #Заменить inmemory на postgres, чтобы использовать базу данных
