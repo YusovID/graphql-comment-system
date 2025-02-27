@@ -31,6 +31,7 @@ func InitializeComments() {
 	comments = make(map[string]*model.Comment)
 	ctx := context.Background()
 	store := NewCommentStore()
+
 	comment1 := &model.Comment{
 		ID:        "1",
 		Author:    "Комментатор 1",
@@ -67,6 +68,7 @@ func (*CommentStore) GetCommentByID(ctx context.Context, id string) (*model.Comm
 	if !ok {
 		return nil, fmt.Errorf("comment with id %s not found", id)
 	}
+
 	return comment, nil
 }
 
@@ -75,6 +77,7 @@ func (*CommentStore) GetCommentsForPost(ctx context.Context, postID string, firs
 	defer commentsMutex.RUnlock()
 
 	filtered := make([]*model.Comment, 0)
+
 	for _, comment := range comments {
 		if comment.PostID == postID {
 			filtered = append(filtered, comment)
@@ -87,6 +90,7 @@ func (*CommentStore) GetCommentsForPost(ctx context.Context, postID string, firs
 		if err1 != nil || err2 != nil {
 			return false
 		}
+
 		return t1.Before(t2)
 	})
 
@@ -98,6 +102,7 @@ func (*CommentStore) GetCommentsForPost(ctx context.Context, postID string, firs
 	}
 
 	start := 0
+
 	if afterCursor != nil {
 		for i, c := range filtered {
 			if c.ID == *afterCursor {
@@ -124,18 +129,22 @@ func (*CommentStore) GetCommentsForPost(ctx context.Context, postID string, firs
 
 func convertToCommentEdges(comments []*model.Comment) []*model.CommentEdge {
 	edges := make([]*model.CommentEdge, len(comments))
+
 	for i, comment := range comments {
 		edges[i] = &model.CommentEdge{
 			Node: comment,
 		}
 	}
+
 	return edges
 }
 
 func (*CommentStore) AddComment(ctx context.Context, comment *model.Comment) error {
 	commentsMutex.Lock()
 	defer commentsMutex.Unlock()
+
 	comments[comment.ID] = comment
+
 	return nil
 }
 
@@ -144,6 +153,7 @@ func (*CommentStore) GetRepliesForComment(ctx context.Context, parentID string, 
 	defer commentsMutex.RUnlock()
 
 	filtered := make([]*model.Comment, 0)
+
 	for _, comment := range comments {
 		if comment.ParentID != nil && *comment.ParentID == parentID {
 			filtered = append(filtered, comment)
@@ -156,6 +166,7 @@ func (*CommentStore) GetRepliesForComment(ctx context.Context, parentID string, 
 		if err1 != nil || err2 != nil {
 			return false
 		}
+
 		return t1.Before(t2)
 	})
 
@@ -167,6 +178,7 @@ func (*CommentStore) GetRepliesForComment(ctx context.Context, parentID string, 
 	}
 
 	start := 0
+	
 	if afterCursor != nil {
 		for i, c := range filtered {
 			if c.ID == *afterCursor {

@@ -61,6 +61,7 @@ func (*PostStore) GetPostByID(ctx context.Context, id string) (*model.Post, erro
 	if !ok {
 		return nil, fmt.Errorf("post with id %s not found", id)
 	}
+
 	return post, nil
 }
 
@@ -75,6 +76,7 @@ func (*PostStore) GetPosts(ctx context.Context, first int32, afterCursor *string
 		if err != nil {
 			return nil, fmt.Errorf("invalid CreatedAt format for post %s: %w", post.ID, err)
 		}
+
 		validPosts = append(validPosts, post)
 	}
 
@@ -87,6 +89,7 @@ func (*PostStore) GetPosts(ctx context.Context, first int32, afterCursor *string
 	sortedPosts := validPosts // Теперь используем только валидные посты
 
 	startIndex := 0
+
 	if afterCursor != nil && *afterCursor != "" {
 		afterID := *afterCursor
 
@@ -99,6 +102,7 @@ func (*PostStore) GetPosts(ctx context.Context, first int32, afterCursor *string
 	}
 
 	numPosts := int32(len(sortedPosts) - startIndex)
+
 	if first == 0 || first > numPosts {
 		first = numPosts
 	}
@@ -109,9 +113,11 @@ func (*PostStore) GetPosts(ctx context.Context, first int32, afterCursor *string
 	return &model.PostConnection{
 		Edges: func() []*model.PostEdge {
 			var edges []*model.PostEdge
+
 			for _, post := range postSlice {
 				edges = append(edges, &model.PostEdge{Node: post})
 			}
+
 			return edges
 		}(),
 		PageInfo: &model.PageInfo{
@@ -123,7 +129,9 @@ func (*PostStore) GetPosts(ctx context.Context, first int32, afterCursor *string
 func (*PostStore) AddPost(ctx context.Context, post *model.Post) error {
 	postsMutex.Lock()
 	defer postsMutex.Unlock()
+
 	posts[post.ID] = post
+
 	return nil
 }
 
