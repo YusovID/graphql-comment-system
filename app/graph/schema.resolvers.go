@@ -8,10 +8,11 @@ import (
 	"context"
 	"fmt"
 	"graphql-comment-system/graph/model"
-	inmemory "graphql-comment-system/pkg/data/in-memory"
 	"graphql-comment-system/pkg/validator"
 	"strings"
 	"time"
+
+	"github.com/google/uuid"
 )
 
 // Post is the resolver for the post field.
@@ -76,7 +77,7 @@ func (r *mutationResolver) CreatePost(ctx context.Context, input model.CreatePos
 	}
 
 	post := &model.Post{
-		ID:            inmemory.GetNextPostID(),
+		ID:            uuid.NewString(),
 		Author:        input.Author,
 		Title:         input.Title,
 		Content:       input.Content,
@@ -102,7 +103,7 @@ func (r *mutationResolver) CreateComment(ctx context.Context, input model.Create
 	}
 
 	comment := &model.Comment{
-		ID:        inmemory.GetNextCommentID(),
+		ID:        uuid.NewString(),
 		PostID:    input.PostID,
 		Author:    input.Author,
 		Content:   input.Content,

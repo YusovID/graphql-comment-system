@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"graphql-comment-system/graph/model"
 	"sort"
-	"strconv"
 	"sync"
 	"time"
 )
@@ -18,9 +17,6 @@ func NewCommentStore() *CommentStore {
 
 var comments map[string]*model.Comment
 var commentsMutex sync.RWMutex
-
-// TODO: Удалить
-var commentID int = 3
 
 type CommentsResult struct {
 	Comments    []*model.Comment
@@ -178,7 +174,7 @@ func (*CommentStore) GetRepliesForComment(ctx context.Context, parentID string, 
 	}
 
 	start := 0
-	
+
 	if afterCursor != nil {
 		for i, c := range filtered {
 			if c.ID == *afterCursor {
@@ -201,11 +197,4 @@ func (*CommentStore) GetRepliesForComment(ctx context.Context, parentID string, 
 		Edges:    convertToCommentEdges(commentSlice),
 		PageInfo: &model.PageInfo{HasNextPage: hasNextPage},
 	}, nil
-}
-
-// TODO: Удалить
-func GetNextCommentID() string {
-	ID := strconv.Itoa(commentID)
-	commentID++
-	return ID
 }

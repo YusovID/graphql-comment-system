@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"graphql-comment-system/graph/model"
 	"sort"
-	"strconv"
 	"sync"
 	"time"
 )
@@ -23,9 +22,6 @@ type PostsResult struct {
 
 var posts map[string]*model.Post
 var postsMutex sync.RWMutex
-
-// TODO: Удалить
-var postID int = 2
 
 func InitializePosts() {
 	posts = make(map[string]*model.Post)
@@ -133,11 +129,4 @@ func (*PostStore) AddPost(ctx context.Context, post *model.Post) error {
 	posts[post.ID] = post
 
 	return nil
-}
-
-// TODO: Удалить
-func GetNextPostID() string {
-	ID := strconv.Itoa(postID)
-	commentID++
-	return ID
 }
