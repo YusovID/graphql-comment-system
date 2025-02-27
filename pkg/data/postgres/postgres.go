@@ -30,8 +30,10 @@ type PostStore struct {
 }
 
 // NewPostStore returns new instance of PostStore
-func NewPostStore(*pgx.Conn) *PostStore {
-	return &PostStore{}
+func NewPostStore(conn *pgx.Conn) *PostStore {
+	return &PostStore{
+		conn: conn,
+	}
 }
 
 // CommentStore struct
@@ -40,6 +42,8 @@ type CommentStore struct {
 }
 
 // NewCommentStore returns new instance of CommentStore
-func NewCommentStore(*pgx.Conn) *CommentStore {
-	return &CommentStore{}
+func NewCommentStore(conn *pgx.Conn) *CommentStore {
+	return &CommentStore{
+		conn: conn,
+	}
 }

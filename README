@@ -2,10 +2,20 @@
 
 mutation CreatePost{
   createPost(input:{
-    author:"Test"
-    title: "Test"
-    content:"Test" 
+    author:"Test post author"
+    title: "Test post title"
+    content:"Test post content" 
     allowComments:true
+  }) {
+    id
+  }
+}
+
+mutation CreateComment{
+  createComment(input:{
+    postId:"c1"
+    author:"Test comment author"
+    content:"Test comment content"
   }) {
     id
   }
