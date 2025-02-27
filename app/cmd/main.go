@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"graphql-comment-system/graph"
 	"graphql-comment-system/pkg/data"
 	inmemory "graphql-comment-system/pkg/data/in-memory"
@@ -29,8 +28,6 @@ func main() {
 		log.Println("Error loading .env file, using system environment variables: ", err)
 	}
 
-	// Use standard logger
-	ctx := context.Background()
 	log.Println("Starting server")
 
 	port := os.Getenv("PORT")
@@ -79,7 +76,7 @@ func main() {
 		commentStore = inmemory.NewCommentStore()
 	}
 
-	srv := handler.New(graph.NewExecutableSchema(graph.Config{Resolvers: graph.NewResolver(ctx, postStore, commentStore)}))
+	srv := handler.New(graph.NewExecutableSchema(graph.Config{Resolvers: graph.NewResolver(postStore, commentStore)}))
 
 	srv.AddTransport(transport.Options{})
 	srv.AddTransport(transport.GET{})
