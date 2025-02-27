@@ -1,17 +1,18 @@
-// graph/resolver.go
 package graph
 
-import "graphql-comment-system/pkg/data/in-memory"
+import (
+	"graphql-comment-system/pkg/data"
+)
 
-// Resolver struct holds the application state (dependencies).
+// This file will not be regenerated automatically.
+//
+// It serves as dependency injection for your app, add any dependencies you require here.
+
 type Resolver struct {
-	PostStore    inmemory.PostStore
-	CommentStore inmemory.CommentStore
+	PostStore    data.PostStore
+	CommentStore data.CommentStore
 }
 
-// NewResolver ...
-func NewResolver(postStore inmemory.PostStore, commentStore inmemory.CommentStore) *Resolver {
+func NewResolver(postStore data.PostStore, commentStore data.CommentStore) *Resolver {
 	return &Resolver{PostStore: postStore, CommentStore: commentStore}
 }
-
-

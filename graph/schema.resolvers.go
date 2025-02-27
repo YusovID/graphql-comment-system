@@ -35,15 +35,15 @@ func (r *commentResolver) Replies(ctx context.Context, obj *model.Comment, first
 	}
 
 	var edges []*model.CommentEdge
-	for _, comment := range result.Comments { // result.Comments - это теперь ответы ПЕРВОГО уровня
+	for _, edge := range result.Edges {
 		edges = append(edges, &model.CommentEdge{
-			Cursor: comment.ID,
-			Node:   comment, // comment теперь содержит вложенное дерево ответов в поле Replies
+			Cursor: edge.Cursor,
+			Node:   edge.Node,
 		})
 	}
 
 	pageInfo := &model.PageInfo{
-		HasNextPage: result.HasNextPage,
+		HasNextPage: result.PageInfo.HasNextPage,
 		StartCursor: func() *string {
 			if len(edges) > 0 {
 				return &edges[0].Cursor
@@ -131,15 +131,15 @@ func (r *postResolver) Comments(ctx context.Context, obj *model.Post, first *int
 	}
 
 	var edges []*model.CommentEdge
-	for _, comment := range result.Comments {
+	for _, edge := range result.Edges {
 		edges = append(edges, &model.CommentEdge{
-			Cursor: comment.ID,
-			Node:   comment,
+			Cursor: edge.Cursor,
+			Node:   edge.Node,
 		})
 	}
 
 	pageInfo := &model.PageInfo{
-		HasNextPage: result.HasNextPage,
+		HasNextPage: result.PageInfo.HasNextPage,
 		StartCursor: func() *string {
 			if len(edges) > 0 {
 				return &edges[0].Cursor
@@ -181,11 +181,11 @@ func (r *queryResolver) Posts(ctx context.Context, first *int32, after *string) 
 		return nil, fmt.Errorf("get posts: %w", err)
 	}
 
-	postEdges := make([]*model.PostEdge, len(result.Posts))
-	for i, post := range result.Posts {
+	postEdges := make([]*model.PostEdge, len(result.Edges))
+	for i, edge := range result.Edges {
 		postEdges[i] = &model.PostEdge{
-			Cursor: post.ID,
-			Node:   post,
+			Cursor: edge.Cursor,
+			Node:   edge.Node,
 		}
 	}
 
@@ -203,7 +203,7 @@ func (r *queryResolver) Posts(ctx context.Context, first *int32, after *string) 
 	}
 
 	pageInfo := &model.PageInfo{
-		HasNextPage:     result.HasNextPage,
+		HasNextPage:     result.PageInfo.HasNextPage,
 		HasPreviousPage: hasPreviousPage,
 		StartCursor:     startCursor,
 		EndCursor:       endCursor,

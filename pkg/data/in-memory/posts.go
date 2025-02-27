@@ -17,7 +17,8 @@ type PostsResult struct {
 
 var posts map[string]*model.Post
 var postsMutex sync.RWMutex
-//TODO: Удалить
+
+// TODO: Удалить
 var postID int = 2
 
 func InitializePosts() {
@@ -111,7 +112,7 @@ func AddPost(ctx context.Context, post *model.Post) {
 	posts[post.ID] = post
 }
 
-//TODO: Удалить
+// TODO: Удалить
 func GetNextPostID() string {
 	ID := strconv.Itoa(postID)
 	commentID++

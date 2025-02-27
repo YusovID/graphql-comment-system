@@ -1,12 +1,14 @@
-// cmd/main.go
 package main
 
 import (
 	"graphql-comment-system/graph"
+	"graphql-comment-system/pkg/data"
 	inmemoryData "graphql-comment-system/pkg/data/in-memory"
+	"graphql-comment-system/pkg/data/postgres"
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/handler/extension"
@@ -23,7 +25,7 @@ func main() {
 	// Загрузка .env файла
 	err := godotenv.Load()
 	if err != nil {
-		log.Println("Error loading .env file, using system environment variables")
+		log.Println("Error loading .env file, using system environment variables: ", err)
 	}
 
 	port := os.Getenv("PORT")
@@ -33,37 +35,43 @@ func main() {
 
 	storageType := os.Getenv("STORAGE_TYPE")
 
-	var postStore inmemoryData.PostStore
-	var commentStore inmemoryData.CommentStore
-
-	inMemoryStore := &inmemoryData.InMemoryStore{} // Create InMemoryStore instance
+	var postStore data.PostStore
+	var commentStore data.CommentStore
 
 	switch storageType {
 	case "postgres":
-		// TODO: Инициализация PostgreSQL хранилища (реализация будет позже)
-		log.Println("Using PostgreSQL storage (not fully implemented yet)")
-		// Временно используем in-memory как заглушку for postgres - now use InMemoryStore directly
-		inmemoryData.InitializeData() // Keep InitializeData for initial data setup
-		postStore = inMemoryStore
-		commentStore = inMemoryStore
+		port, err := strconv.Atoi(os.Getenv("DB_PORT"))
+		if err!=nil{
+			log.Fatalf("Error converting DB_PORT to int: %v", err)
+		}
+
+		config := postgres.Config{
+			Host:     os.Getenv("DB_HOST"),
+			Port:     port,
+			Username: os.Getenv("DB_USER"),
+			Password: os.Getenv("DB_PASSWORD"),
+			Database: os.Getenv("DB_NAME"),
+		}
+		conn, err := postgres.New(config)
+		if err != nil {
+			log.Fatalf("Error connecting to database: %v", err)
+		}
+		postStore = postgres.NewPostStore(conn)
+		commentStore = postgres.NewCommentStore(conn)
+		log.Println("Using PostgreSQL storage")
 
 	case "inmemory":
 		log.Println("Using In-Memory storage")
-		inmemoryData.InitializeData() // Keep InitializeData for initial data setup
-		postStore = inMemoryStore
-		commentStore = inMemoryStore
+		postStore = inmemoryData.NewPostStore()
+		commentStore = inmemoryData.NewCommentStore()
 
 	default:
 		log.Printf("STORAGE_TYPE not set or invalid, using default In-Memory storage")
-		inmemoryData.InitializeData() // Keep InitializeData for initial data setup
-		postStore = inMemoryStore
-		commentStore = inMemoryStore
+		postStore = inmemoryData.NewPostStore()
+		commentStore = inmemoryData.NewCommentStore()
 	}
 
-	srv := handler.New(graph.NewExecutableSchema(graph.Config{Resolvers: &graph.Resolver{
-		PostStore:    postStore,
-		CommentStore: commentStore,
-	}}))
+	srv := handler.New(graph.NewExecutableSchema(graph.Config{Resolvers: graph.NewResolver(postStore, commentStore)}))
 
 	srv.AddTransport(transport.Options{})
 	srv.AddTransport(transport.GET{})
