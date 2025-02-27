@@ -19,7 +19,7 @@ import (
 	"github.com/vektah/gqlparser/v2/ast"
 )
 
-const defaultPort = "8080"
+const defaultPort = "50051"
 
 func main() {
 	// Загрузка .env файла
@@ -41,7 +41,7 @@ func main() {
 	switch storageType {
 	case "postgres":
 		port, err := strconv.Atoi(os.Getenv("DB_PORT"))
-		if err!=nil{
+		if err != nil {
 			log.Fatalf("Error converting DB_PORT to int: %v", err)
 		}
 
