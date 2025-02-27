@@ -1,0 +1,15 @@
+{"level":"info","ts":1740665165.4966686,"caller":"logger/logger.go:93","msg":"starting server","time":"2025-02-27T17:06:05+03:00"}
+{"level":"info","ts":1740665190.2792785,"caller":"logger/logger.go:93","msg":"starting server","time":"2025-02-27T17:06:30+03:00"}
+{"level":"fatal","ts":1740665197.5295484,"caller":"logger/logger.go:93","msg":"Error connecting to database","error":"unable to connect to database: failed to connect to `user=user database=graphql-comment-system`: hostname resolving error: lookup postgres-db: no such host","time":"2025-02-27T17:06:37+03:00","stacktrace":"graphql-comment-system/pkg/logger.(*Logger).log\n\tD:/Projects/Golang/Ozon/test_task/graphql-comment-system/app/pkg/logger/logger.go:93\ngraphql-comment-system/pkg/logger.(*Logger).Fatal\n\tD:/Projects/Golang/Ozon/test_task/graphql-comment-system/app/pkg/logger/logger.go:84\nmain.main\n\tD:/Projects/Golang/Ozon/test_task/graphql-comment-system/app/cmd/main.go:75\nruntime.main\n\tC:/Program Files/Go/src/runtime/proc.go:283"}
+{"level":"info","ts":1740665221.5151446,"caller":"logger/logger.go:93","msg":"starting server","time":"2025-02-27T17:07:01+03:00"}
+{"level":"info","ts":1740665221.6711137,"caller":"logger/logger.go:93","msg":"Using PostgreSQL storage","time":"2025-02-27T17:07:01+03:00"}
+{"level":"info","ts":1740665221.6736507,"caller":"logger/logger.go:93","msg":"connect to http://localhost:50051/ for GraphQL playground","time":"2025-02-27T17:07:01+03:00"}
+{"level":"info","ts":1740665428.8425095,"caller":"logger/logger.go:93","msg":"starting server","time":"2025-02-27T17:10:28+03:00"}
+{"level":"info","ts":1740665428.8884563,"caller":"logger/logger.go:93","msg":"Using PostgreSQL storage","time":"2025-02-27T17:10:28+03:00"}
+{"level":"info","ts":1740665428.8895862,"caller":"logger/logger.go:93","msg":"connect to http://localhost:50051/ for GraphQL playground","time":"2025-02-27T17:10:28+03:00"}
+{"level":"info","ts":1740665988.3645544,"caller":"logger/logger.go:93","msg":"starting server","time":"2025-02-27T17:19:48+03:00"}
+{"level":"info","ts":1740665988.4114804,"caller":"logger/logger.go:93","msg":"Using PostgreSQL storage","time":"2025-02-27T17:19:48+03:00"}
+{"level":"info","ts":1740665988.4114804,"caller":"logger/logger.go:93","msg":"connect to http://localhost:50051/ for GraphQL playground","time":"2025-02-27T17:19:48+03:00"}
+{"level":"info","ts":1740666300.6368694,"caller":"logger/logger.go:93","msg":"starting server","time":"2025-02-27T17:25:00+03:00"}
+{"level":"info","ts":1740666300.6881876,"caller":"logger/logger.go:93","msg":"Using PostgreSQL storage","time":"2025-02-27T17:25:00+03:00"}
+{"level":"info","ts":1740666300.6915545,"caller":"logger/logger.go:93","msg":"connect to http://localhost:50051/ for GraphQL playground","time":"2025-02-27T17:25:00+03:00"}
