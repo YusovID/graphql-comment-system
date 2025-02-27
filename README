@@ -33,7 +33,7 @@ query GetPost{
   }
 }
 
-Подключение к базе данных:
+Создание базы данных:
 
 psql -U user -d graphql-comment-system
 
