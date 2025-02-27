@@ -6,8 +6,8 @@ require (
 	github.com/99designs/gqlgen v0.17.66
 	github.com/jackc/pgx/v5 v5.7.2
 	github.com/joho/godotenv v1.5.1
+	github.com/kr/text v0.2.0 // indirect
 	github.com/vektah/gqlparser/v2 v2.5.22
-	go.uber.org/zap v1.27.0
 )
 
 require (
@@ -24,7 +24,6 @@ require (
 	github.com/sosodev/duration v1.3.1 // indirect
 	github.com/urfave/cli/v2 v2.27.5 // indirect
 	github.com/xrash/smetrics v0.0.0-20240521201337-686a1a2994c1 // indirect
-	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/crypto v0.31.0 // indirect
 	golang.org/x/mod v0.23.0 // indirect
 	golang.org/x/sync v0.11.0 // indirect
