@@ -6,6 +6,7 @@ require (
 	github.com/99designs/gqlgen v0.17.66
 	github.com/jackc/pgx/v5 v5.7.2
 	github.com/joho/godotenv v1.5.1
+	github.com/kr/text v0.2.0 // indirect
 	github.com/vektah/gqlparser/v2 v2.5.22
 )
 
