@@ -6,7 +6,21 @@ import (
 	"graphql-comment-system/graph/model"
 	"sort"
 	"time"
+
+	"github.com/jackc/pgx/v5"
 )
+
+// CommentStore struct
+type CommentStore struct {
+	conn *pgx.Conn
+}
+
+// NewCommentStore returns new instance of CommentStore
+func NewCommentStore(conn *pgx.Conn) *CommentStore {
+	return &CommentStore{
+		conn: conn,
+	}
+}
 
 func (c *CommentStore) AddComment(ctx context.Context, comment *model.Comment) error {
 	_, err := c.conn.Exec(ctx, `INSERT INTO comments (id, post_id, parent_id, author, content, created_at) VALUES ($1, $2, $3, $4, $5, $6)`,

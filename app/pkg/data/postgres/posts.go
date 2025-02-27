@@ -6,7 +6,19 @@ import (
 	"graphql-comment-system/graph/model"
 	"sort"
 	"time"
+
+	"github.com/jackc/pgx/v5"
 )
+
+type PostStore struct {
+	conn *pgx.Conn
+}
+
+func NewPostStore(conn *pgx.Conn) *PostStore {
+	return &PostStore{
+		conn: conn,
+	}
+}
 
 func (p *PostStore) AddPost(ctx context.Context, post *model.Post) error {
 	_, err := p.conn.Exec(ctx, `INSERT INTO posts (id, author, title, content, created_at, allow_comments) VALUES ($1, $2, $3, $4, $5, $6)`,
@@ -71,4 +83,3 @@ func (p *PostStore) GetPosts(ctx context.Context, first int32, after *string) (*
 		PageInfo: pageInfo,
 	}, nil
 }
-

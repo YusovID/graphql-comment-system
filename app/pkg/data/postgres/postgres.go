@@ -23,27 +23,3 @@ func New(config Config) (*pgx.Conn, error) {
 	}
 	return conn, nil
 }
-
-// PostStore struct
-type PostStore struct {
-	conn *pgx.Conn
-}
-
-// NewPostStore returns new instance of PostStore
-func NewPostStore(conn *pgx.Conn) *PostStore {
-	return &PostStore{
-		conn: conn,
-	}
-}
-
-// CommentStore struct
-type CommentStore struct {
-	conn *pgx.Conn
-}
-
-// NewCommentStore returns new instance of CommentStore
-func NewCommentStore(conn *pgx.Conn) *CommentStore {
-	return &CommentStore{
-		conn: conn,
-	}
-}
