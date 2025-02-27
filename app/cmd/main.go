@@ -1,10 +1,13 @@
 package main
 
 import (
-	"graphql-comment-system/graph"
-	"graphql-comment-system/pkg/data"
-	inmemory "graphql-comment-system/pkg/data/in-memory"
-	"graphql-comment-system/pkg/data/postgres"
+	"context"
+	"errors"
+	"fmt"
+	"graphql-comment-system/app/graph"
+	"graphql-comment-system/app/pkg/data"
+	inmemory "graphql-comment-system/app/pkg/data/in-memory"
+	"graphql-comment-system/app/pkg/data/postgres"
 	"log"
 	"net/http"
 	"os"
@@ -15,6 +18,11 @@ import (
 	"github.com/99designs/gqlgen/graphql/handler/lru"
 	"github.com/99designs/gqlgen/graphql/handler/transport"
 	"github.com/99designs/gqlgen/graphql/playground"
+	"github.com/golang-migrate/migrate/v4"
+	_ "github.com/golang-migrate/migrate/v4/database/postgres"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
+	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/joho/godotenv"
 	"github.com/vektah/gqlparser/v2/ast"
 )
@@ -22,7 +30,6 @@ import (
 const defaultPort = "50051"
 
 func main() {
-	// Load .env file
 	err := godotenv.Load()
 	if err != nil {
 		log.Println("Error loading .env file, using system environment variables: ", err)
@@ -55,10 +62,54 @@ func main() {
 			Password: os.Getenv("DB_PASSWORD"),
 			Database: os.Getenv("DB_NAME"),
 		}
+
+		databaseDSN := fmt.Sprintf("postgres://%s:%s@%s:%d/%s?sslmode=disable", config.Username, config.Password, config.Host, config.Port, config.Database)
+		serverDSN := fmt.Sprintf("postgres://%s:%s@%s:%d/?sslmode=disable", config.Username, config.Password, config.Host, config.Port, config.Database)
+
+		ctx := context.Background()
+
 		conn, err := postgres.New(config)
 		if err != nil {
-			log.Fatalf("Error connecting to database: %v", err)
+			var pgErr *pgconn.PgError
+			if errors.As(err, &pgErr) && pgErr.Code == "3D000" { // Ошибка "database does not exist"
+				log.Println("База данных", config.Database, "не найдена. Попытка создания...")
+
+				serverConn, err := pgx.Connect(ctx, serverDSN)
+				if err != nil {
+					log.Fatalf("Не удалось подключиться к серверу PostgreSQL для создания базы данных: %v", err)
+				}
+				defer serverConn.Close(ctx)
+
+				_, err = serverConn.Exec(ctx, fmt.Sprintf("CREATE DATABASE %s", config.Database))
+				if err != nil {
+					log.Fatalf("Ошибка при создании базы данных %s: %v", config.Database, err)
+				}
+				log.Println("База данных", config.Database, "успешно создана.")
+
+				conn, err = postgres.New(config)
+				if err != nil {
+					log.Fatalf("Не удалось подключиться к созданной базе данных %s: %v", config.Database, err)
+				}
+				log.Println("Подключение к созданной базе данных", config.Database, "установлено.")
+
+			} else {
+				log.Fatalf("Ошибка подключения к базе данных %s: %v", config.Database, err)
+			}
 		}
+
+		// ** Запуск миграций **
+		log.Println("Запуск миграций базы данных...")
+		m, err := migrate.New(
+			"file://app/internal/migration", // Путь к папке с файлами миграций
+			databaseDSN)         // Строка подключения к базе данных
+		if err != nil {
+			log.Fatalf("Ошибка при создании instance миграций: %v", err)
+		}
+		if err := m.Up(); err != nil && !errors.Is(err, migrate.ErrNoChange) { // Запускаем миграции "вверх"
+			log.Fatalf("Ошибка при выполнении миграций: %v", err)
+		}
+		log.Println("Миграции базы данных успешно выполнены.")
+
 		postStore = postgres.NewPostStore(conn)
 		commentStore = postgres.NewCommentStore(conn)
 		log.Println("Using PostgreSQL storage")
@@ -93,5 +144,5 @@ func main() {
 	http.Handle("/query", srv)
 
 	log.Printf("Connect to http://localhost:%s/ for GraphQL playground", port)
-	log.Fatal(http.ListenAndServe(":"+port, nil)) // Log error and exit on failure.
+	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
