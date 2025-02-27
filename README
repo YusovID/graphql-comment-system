@@ -35,15 +35,56 @@ query GetPost{
 
 Создание базы данных:
 
-psql -U user -d graphql-comment-system
+
+CREATE DATABASE "my_habr";
+
+psql -U postgres -d my_habr
+
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+-- Создание таблицы posts
+CREATE TABLE posts (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(), -- UUID в качестве Primary Key, генерируется автоматически
+    author TEXT NOT NULL,                           -- Имя автора поста (не может быть пустым)
+    title TEXT NOT NULL,                            -- Заголовок поста (не может быть пустым)
+    content TEXT NOT NULL,                          -- Содержание поста (не может быть пустым)
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(), -- Дата и время создания, по умолчанию текущее время
+    allow_comments BOOLEAN NOT NULL DEFAULT TRUE     -- Разрешены ли комментарии к посту, по умолчанию разрешены
+);
+
+-- Создание индекса по дате создания для таблицы posts (для быстрой сортировки по дате)
+CREATE INDEX posts_created_at_idx ON posts(created_at);
+
+-- Создание таблицы comments
+CREATE TABLE comments (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),   -- UUID в качестве Primary Key, генерируется автоматически
+    author TEXT NOT NULL,                             -- Имя автора комментария (не может быть пустым)
+    content TEXT NOT NULL,                            -- Содержание комментария (не может быть пустым)
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(), -- Дата и время создания, по умолчанию текущее время
+    post_id UUID NOT NULL,                             -- ID поста, к которому относится комментарий (внешний ключ, не может быть пустым)
+    parent_id UUID,                                   -- ID родительского комментария (для древовидных комментариев, может быть NULL)
+    -- Внешний ключ на таблицу posts, для связи комментария и поста
+    CONSTRAINT fk_post
+        FOREIGN KEY(post_id)
+            REFERENCES posts(id)
+            ON DELETE CASCADE, -- При удалении поста, все связанные комментарии также удаляются
+    -- Внешний ключ на саму себя (comments), для реализации древовидных комментариев
+    CONSTRAINT fk_parent_comment
+        FOREIGN KEY(parent_id)
+            REFERENCES comments(id)
+            ON DELETE CASCADE  -- При удалении родительского комментария, все дочерние комментарии также удаляются
+);
+
+-- Создание индекса по post_id для таблицы comments (для быстрого получения комментариев к посту)
+CREATE INDEX comments_post_id_idx ON comments(post_id);
+-- Создание индекса по parent_id для таблицы comments (для быстрого получения ответов на комментарий)
+CREATE INDEX comments_parent_id_idx ON comments(parent_id);
+-- Создание индекса по дате создания для таблицы comments (для быстрой сортировки по дате)
+CREATE INDEX comments_created_at_idx ON comments(created_at);
 
 Собрать контейнер и запустить контейнер:
 
-docker build -t graphql-comment-system:local .
+docker build --progress=plain -t graphql-comment-system:local .
 docker network create my-network     
-docker run --name postgres-db --net my-network -p 5432:5432 -e POSTGRES_USER=user -e POSTGRES_PASSWORD=password -e POSTGRES_DB=graphql-comment-system -d postgres:latest
-docker run --name graphql-app --net my-network --env-file app/.env -p 50051:50051 graphql-comment-system:local       
-
-
-
-#Заменить inmemory на postgres, чтобы использовать базу данных
+docker run --name postgres-db --net my-network -p 5432:5432 -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=Postgresqltop228. -e POSTGRES_DB=my_habr -d postgres:latest
+docker run --name graphql-app --net my-network --env-file .env -p 50051:50051 graphql-comment-system:local       
