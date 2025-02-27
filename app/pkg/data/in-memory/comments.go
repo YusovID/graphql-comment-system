@@ -10,6 +10,12 @@ import (
 	"time"
 )
 
+type CommentStore struct{}
+
+func NewCommentStore() *CommentStore {
+	return &CommentStore{}
+}
+
 var comments map[string]*model.Comment
 var commentsMutex sync.RWMutex
 
@@ -24,7 +30,7 @@ type CommentsResult struct {
 func InitializeComments() {
 	comments = make(map[string]*model.Comment)
 	ctx := context.Background()
-
+	store := NewCommentStore()
 	comment1 := &model.Comment{
 		ID:        "1",
 		Author:    "Комментатор 1",
@@ -32,7 +38,7 @@ func InitializeComments() {
 		CreatedAt: time.Now().Add(-time.Hour * 2).Format(time.RFC3339),
 		PostID:    "1",
 	}
-	AddComment(ctx, comment1)
+	store.AddComment(ctx, comment1)
 
 	comment2 := &model.Comment{
 		ID:        "2",
@@ -41,7 +47,7 @@ func InitializeComments() {
 		CreatedAt: time.Now().Add(-time.Hour).Format(time.RFC3339),
 		PostID:    "1",
 	}
-	AddComment(ctx, comment2)
+	store.AddComment(ctx, comment2)
 
 	comment3 := &model.Comment{
 		ID:        "3",
@@ -50,10 +56,10 @@ func InitializeComments() {
 		CreatedAt: time.Now().Format(time.RFC3339),
 		PostID:    "2",
 	}
-	AddComment(ctx, comment3)
+	store.AddComment(ctx, comment3)
 }
 
-func GetCommentByID(ctx context.Context, id string) (*model.Comment, error) {
+func (*CommentStore) GetCommentByID(ctx context.Context, id string) (*model.Comment, error) {
 	commentsMutex.RLock()
 	defer commentsMutex.RUnlock()
 
@@ -64,7 +70,7 @@ func GetCommentByID(ctx context.Context, id string) (*model.Comment, error) {
 	return comment, nil
 }
 
-func GetCommentsForPost(ctx context.Context, postID string, first int32, afterCursor *string) (CommentsResult, error) {
+func (*CommentStore) GetCommentsForPost(ctx context.Context, postID string, first int32, afterCursor *string) (*model.CommentConnection, error) {
 	commentsMutex.RLock()
 	defer commentsMutex.RUnlock()
 
@@ -87,7 +93,7 @@ func GetCommentsForPost(ctx context.Context, postID string, first int32, afterCu
 	for _, c := range filtered {
 		_, err := time.Parse(time.RFC3339, c.CreatedAt)
 		if err != nil {
-			return CommentsResult{}, fmt.Errorf("error parsing date: %w", err)
+			return nil, fmt.Errorf("error parsing date: %w", err)
 		}
 	}
 
@@ -110,19 +116,30 @@ func GetCommentsForPost(ctx context.Context, postID string, first int32, afterCu
 
 	hasNextPage := end < len(filtered)
 
-	return CommentsResult{
-		Comments:    commentSlice,
-		HasNextPage: hasNextPage,
+	return &model.CommentConnection{
+		Edges:    convertToCommentEdges(commentSlice),
+		PageInfo: &model.PageInfo{HasNextPage: hasNextPage},
 	}, nil
 }
 
-func AddComment(ctx context.Context, comment *model.Comment) {
+func convertToCommentEdges(comments []*model.Comment) []*model.CommentEdge {
+	edges := make([]*model.CommentEdge, len(comments))
+	for i, comment := range comments {
+		edges[i] = &model.CommentEdge{
+			Node: comment,
+		}
+	}
+	return edges
+}
+
+func (*CommentStore) AddComment(ctx context.Context, comment *model.Comment) error {
 	commentsMutex.Lock()
 	defer commentsMutex.Unlock()
 	comments[comment.ID] = comment
+	return nil
 }
 
-func GetRepliesForComment(ctx context.Context, parentID string, first int32, afterCursor *string) (CommentsResult, error) {
+func (*CommentStore) GetRepliesForComment(ctx context.Context, parentID string, first int32, afterCursor *string) (*model.CommentConnection, error) {
 	commentsMutex.RLock()
 	defer commentsMutex.RUnlock()
 
@@ -145,7 +162,7 @@ func GetRepliesForComment(ctx context.Context, parentID string, first int32, aft
 	for _, c := range filtered {
 		_, err := time.Parse(time.RFC3339, c.CreatedAt)
 		if err != nil {
-			return CommentsResult{}, fmt.Errorf("error parsing date: %w", err)
+			return nil, fmt.Errorf("error parsing date: %w", err)
 		}
 	}
 
@@ -168,9 +185,9 @@ func GetRepliesForComment(ctx context.Context, parentID string, first int32, aft
 
 	hasNextPage := end < len(filtered)
 
-	return CommentsResult{
-		Comments:    commentSlice,
-		HasNextPage: hasNextPage,
+	return &model.CommentConnection{
+		Edges:    convertToCommentEdges(commentSlice),
+		PageInfo: &model.PageInfo{HasNextPage: hasNextPage},
 	}, nil
 }
 

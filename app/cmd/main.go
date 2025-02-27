@@ -1,9 +1,10 @@
 package main
 
 import (
+	"context"
 	"graphql-comment-system/graph"
 	"graphql-comment-system/pkg/data"
-	inmemoryData "graphql-comment-system/pkg/data/in-memory"
+	inmemory "graphql-comment-system/pkg/data/in-memory"
 	"graphql-comment-system/pkg/data/postgres"
 	"log"
 	"net/http"
@@ -22,11 +23,15 @@ import (
 const defaultPort = "50051"
 
 func main() {
-	// Загрузка .env файла
+	// Load .env file
 	err := godotenv.Load()
 	if err != nil {
 		log.Println("Error loading .env file, using system environment variables: ", err)
 	}
+
+	// Use standard logger
+	ctx := context.Background()
+	log.Println("Starting server")
 
 	port := os.Getenv("PORT")
 	if port == "" {
@@ -40,14 +45,15 @@ func main() {
 
 	switch storageType {
 	case "postgres":
-		port, err := strconv.Atoi(os.Getenv("DB_PORT"))
+		dbPortStr := os.Getenv("DB_PORT")
+		dbPort, err := strconv.Atoi(dbPortStr)
 		if err != nil {
-			log.Fatalf("Error converting DB_PORT to int: %v", err)
+			log.Fatalf("Error converting DB_PORT '%s' to int: %v", dbPortStr, err)
 		}
 
 		config := postgres.Config{
 			Host:     os.Getenv("DB_HOST"),
-			Port:     port,
+			Port:     dbPort,
 			Username: os.Getenv("DB_USER"),
 			Password: os.Getenv("DB_PASSWORD"),
 			Database: os.Getenv("DB_NAME"),
@@ -62,16 +68,18 @@ func main() {
 
 	case "inmemory":
 		log.Println("Using In-Memory storage")
-		postStore = inmemoryData.NewPostStore()
-		commentStore = inmemoryData.NewCommentStore()
+		inmemory.InitializeData()
+		postStore = inmemory.NewPostStore()
+		commentStore = inmemory.NewCommentStore()
 
 	default:
-		log.Printf("STORAGE_TYPE not set or invalid, using default In-Memory storage")
-		postStore = inmemoryData.NewPostStore()
-		commentStore = inmemoryData.NewCommentStore()
+		log.Println("STORAGE_TYPE not set or invalid, using default In-Memory storage")
+		inmemory.InitializeData()
+		postStore = inmemory.NewPostStore()
+		commentStore = inmemory.NewCommentStore()
 	}
 
-	srv := handler.New(graph.NewExecutableSchema(graph.Config{Resolvers: graph.NewResolver(postStore, commentStore)}))
+	srv := handler.New(graph.NewExecutableSchema(graph.Config{Resolvers: graph.NewResolver(ctx, postStore, commentStore)}))
 
 	srv.AddTransport(transport.Options{})
 	srv.AddTransport(transport.GET{})
@@ -87,6 +95,6 @@ func main() {
 	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
 	http.Handle("/query", srv)
 
-	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
-	log.Fatal(http.ListenAndServe(":"+port, nil))
+	log.Printf("Connect to http://localhost:%s/ for GraphQL playground", port)
+	log.Fatal(http.ListenAndServe(":"+port, nil)) // Log error and exit on failure.
 }

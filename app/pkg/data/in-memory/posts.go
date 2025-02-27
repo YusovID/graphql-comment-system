@@ -10,6 +10,12 @@ import (
 	"time"
 )
 
+type PostStore struct{}
+
+func NewPostStore() *PostStore {
+	return &PostStore{}
+}
+
 type PostsResult struct {
 	Posts       []*model.Post
 	HasNextPage bool
@@ -24,6 +30,7 @@ var postID int = 2
 func InitializePosts() {
 	posts = make(map[string]*model.Post)
 	ctx := context.Background()
+	store := NewPostStore()
 
 	post1 := &model.Post{
 		ID:            "1",
@@ -33,7 +40,7 @@ func InitializePosts() {
 		CreatedAt:     time.Now().Add(time.Hour).Format(time.RFC3339),
 		AllowComments: true,
 	}
-	AddPost(ctx, post1)
+	store.AddPost(ctx, post1)
 
 	post2 := &model.Post{
 		ID:            "2",
@@ -43,10 +50,10 @@ func InitializePosts() {
 		CreatedAt:     time.Now().Format(time.RFC3339),
 		AllowComments: false,
 	}
-	AddPost(ctx, post2)
+	store.AddPost(ctx, post2)
 }
 
-func GetPostByID(ctx context.Context, id string) (*model.Post, error) {
+func (*PostStore) GetPostByID(ctx context.Context, id string) (*model.Post, error) {
 	postsMutex.RLock()
 	defer postsMutex.RUnlock()
 
@@ -57,7 +64,7 @@ func GetPostByID(ctx context.Context, id string) (*model.Post, error) {
 	return post, nil
 }
 
-func GetPosts(ctx context.Context, first int32, afterCursor *string) (PostsResult, error) {
+func (*PostStore) GetPosts(ctx context.Context, first int32, afterCursor *string) (*model.PostConnection, error) {
 	postsMutex.RLock()
 	defer postsMutex.RUnlock()
 
@@ -66,8 +73,7 @@ func GetPosts(ctx context.Context, first int32, afterCursor *string) (PostsResul
 	for _, post := range posts {
 		_, err := time.Parse(time.RFC3339, post.CreatedAt)
 		if err != nil {
-			// Возвращаем ошибку, если не удалось распарсить дату
-			return PostsResult{}, fmt.Errorf("invalid CreatedAt format for post %s: %w", post.ID, err)
+			return nil, fmt.Errorf("invalid CreatedAt format for post %s: %w", post.ID, err)
 		}
 		validPosts = append(validPosts, post)
 	}
@@ -100,16 +106,25 @@ func GetPosts(ctx context.Context, first int32, afterCursor *string) (PostsResul
 	postSlice := sortedPosts[startIndex : startIndex+int(first)]
 	hasNextPage := numPosts > first
 
-	return PostsResult{
-		Posts:       postSlice,
-		HasNextPage: hasNextPage,
+	return &model.PostConnection{
+		Edges: func() []*model.PostEdge {
+			var edges []*model.PostEdge
+			for _, post := range postSlice {
+				edges = append(edges, &model.PostEdge{Node: post})
+			}
+			return edges
+		}(),
+		PageInfo: &model.PageInfo{
+			HasNextPage: hasNextPage,
+		},
 	}, nil
 }
 
-func AddPost(ctx context.Context, post *model.Post) {
+func (*PostStore) AddPost(ctx context.Context, post *model.Post) error {
 	postsMutex.Lock()
 	defer postsMutex.Unlock()
 	posts[post.ID] = post
+	return nil
 }
 
 // TODO: Удалить
