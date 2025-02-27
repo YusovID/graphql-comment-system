@@ -4,26 +4,26 @@ package validator
 import (
 	"context"
 	"fmt"
-	inmemory "graphql-comment-system/pkg/data/in-memory"
+	"graphql-comment-system/pkg/data"
 	"strings"
 )
 
-// ValidationError представляет ошибку валидации.
+// ValidationError represents a validation error.
 type ValidationError struct {
 	Field   string
 	Message string
 }
 
-// Error реализует интерфейс error.
+// Error implements the error interface.
 func (e *ValidationError) Error() string {
 	return fmt.Sprintf("validation error in field '%s': %s", e.Field, e.Message)
 }
 
-// ValidateCreatePostInput проверяет входные данные для создания поста.
+// ValidateCreatePostInput validates the input data for creating a post.
 func ValidateCreatePostInput(ctx context.Context, title, author, content string) []error {
 	var errors []error
 
-	// Проверка на пустые значения
+	// Check for empty values
 	if len(strings.TrimSpace(title)) == 0 {
 		errors = append(errors, &ValidationError{Field: "title", Message: "title cannot be empty"})
 	}
@@ -39,11 +39,11 @@ func ValidateCreatePostInput(ctx context.Context, title, author, content string)
 	return errors
 }
 
-// ValidateCreateCommentInput проверяет входные данные для создания комментария.
-func ValidateCreateCommentInput(ctx context.Context, author, content, postId string, parentId *string) []error {
+// ValidateCreateCommentInput validates the input data for creating a comment.
+func ValidateCreateCommentInput(postStore data.PostStore, commentStore data.CommentStore, ctx context.Context, author, content, postId string, parentId *string) []error {
 	var errors []error
 
-	// Проверка на пустые значения
+	// Check for empty values
 	if len(strings.TrimSpace(author)) == 0 {
 		errors = append(errors, &ValidationError{Field: "author", Message: "author cannot be empty"})
 	}
@@ -59,8 +59,8 @@ func ValidateCreateCommentInput(ctx context.Context, author, content, postId str
 		errors = append(errors, &ValidationError{Field: "postId", Message: "postId cannot be empty"})
 	}
 
-	// Проверка на существование поста
-	_, err := inmemory.GetPostByID(ctx, postId)
+	// Check for post existence
+	_, err := postStore.GetPostByID(ctx, postId) // Use the interface method
 	if err != nil {
 		errors = append(errors, &ValidationError{Field: "postId", Message: "post with id " + postId + " not found"})
 	}
@@ -70,7 +70,7 @@ func ValidateCreateCommentInput(ctx context.Context, author, content, postId str
 			errors = append(errors, &ValidationError{Field: "parentId", Message: "parentId cannot be empty"})
 		}
 
-		comment, err := inmemory.GetCommentByID(ctx, *parentId)
+		comment, err := commentStore.GetCommentByID(ctx, *parentId) //Use the interface method
 		if err != nil {
 			errors = append(errors, &ValidationError{Field: "parentId", Message: "parent comment with id " + *parentId + " not found"})
 			return errors

@@ -93,7 +93,7 @@ func (r *mutationResolver) CreatePost(ctx context.Context, input model.CreatePos
 // CreateComment is the resolver for the createComment field.
 func (r *mutationResolver) CreateComment(ctx context.Context, input model.CreateCommentInput) (*model.Comment, error) {
 	// Валидация входных данных
-	validationErrors := validator.ValidateCreateCommentInput(ctx, input.Author, input.Content, input.PostID, input.ParentID)
+	validationErrors := validator.ValidateCreateCommentInput(r.PostStore, r.CommentStore, ctx, input.Author, input.Content, input.PostID, input.ParentID)
 	if len(validationErrors) > 0 {
 		var errorMessages []string
 		for _, err := range validationErrors {
