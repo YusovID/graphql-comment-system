@@ -86,5 +86,5 @@ CREATE INDEX comments_created_at_idx ON comments(created_at);
 
 docker build --progress=plain -t graphql-comment-system:local .
 docker network create my-network     
-docker run --name postgres-db --net my-network -p 5432:5432 -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=Postgresqltop228. -e POSTGRES_DB=my_habr -d postgres:latest
+docker run --name postgres-db --net my-network -p 5432:5432 -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=your_password -e POSTGRES_DB=my_habr -d postgres:latest
 docker run --name graphql-app --net my-network --env-file .env -p 50051:50051 graphql-comment-system:local       
