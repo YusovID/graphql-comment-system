@@ -588,7 +588,7 @@ func (ec *executionContext) field_Mutation_createComment_argsInput(
 ) (model.CreateCommentInput, error) {
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
 	if tmp, ok := rawArgs["input"]; ok {
-		return ec.unmarshalNCreateCommentInput2graphqlᚑcommentᚑsystemᚋgraphᚋmodelᚐCreateCommentInput(ctx, tmp)
+		return ec.unmarshalNCreateCommentInput2graphqlᚑcommentᚑsystemᚋappᚋgraphᚋmodelᚐCreateCommentInput(ctx, tmp)
 	}
 
 	var zeroVal model.CreateCommentInput
@@ -611,7 +611,7 @@ func (ec *executionContext) field_Mutation_createPost_argsInput(
 ) (model.CreatePostInput, error) {
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
 	if tmp, ok := rawArgs["input"]; ok {
-		return ec.unmarshalNCreatePostInput2graphqlᚑcommentᚑsystemᚋgraphᚋmodelᚐCreatePostInput(ctx, tmp)
+		return ec.unmarshalNCreatePostInput2graphqlᚑcommentᚑsystemᚋappᚋgraphᚋmodelᚐCreatePostInput(ctx, tmp)
 	}
 
 	var zeroVal model.CreatePostInput
@@ -1117,7 +1117,7 @@ func (ec *executionContext) _Comment_post(ctx context.Context, field graphql.Col
 	}
 	res := resTmp.(*model.Post)
 	fc.Result = res
-	return ec.marshalNPost2ᚖgraphqlᚑcommentᚑsystemᚋgraphᚋmodelᚐPost(ctx, field.Selections, res)
+	return ec.marshalNPost2ᚖgraphqlᚑcommentᚑsystemᚋappᚋgraphᚋmodelᚐPost(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Comment_post(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1218,7 +1218,7 @@ func (ec *executionContext) _Comment_replies(ctx context.Context, field graphql.
 	}
 	res := resTmp.(*model.CommentConnection)
 	fc.Result = res
-	return ec.marshalNCommentConnection2ᚖgraphqlᚑcommentᚑsystemᚋgraphᚋmodelᚐCommentConnection(ctx, field.Selections, res)
+	return ec.marshalNCommentConnection2ᚖgraphqlᚑcommentᚑsystemᚋappᚋgraphᚋmodelᚐCommentConnection(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Comment_replies(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1279,7 +1279,7 @@ func (ec *executionContext) _CommentConnection_edges(ctx context.Context, field 
 	}
 	res := resTmp.([]*model.CommentEdge)
 	fc.Result = res
-	return ec.marshalNCommentEdge2ᚕᚖgraphqlᚑcommentᚑsystemᚋgraphᚋmodelᚐCommentEdgeᚄ(ctx, field.Selections, res)
+	return ec.marshalNCommentEdge2ᚕᚖgraphqlᚑcommentᚑsystemᚋappᚋgraphᚋmodelᚐCommentEdgeᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_CommentConnection_edges(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1329,7 +1329,7 @@ func (ec *executionContext) _CommentConnection_pageInfo(ctx context.Context, fie
 	}
 	res := resTmp.(*model.PageInfo)
 	fc.Result = res
-	return ec.marshalNPageInfo2ᚖgraphqlᚑcommentᚑsystemᚋgraphᚋmodelᚐPageInfo(ctx, field.Selections, res)
+	return ec.marshalNPageInfo2ᚖgraphqlᚑcommentᚑsystemᚋappᚋgraphᚋmodelᚐPageInfo(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_CommentConnection_pageInfo(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1427,7 +1427,7 @@ func (ec *executionContext) _CommentEdge_node(ctx context.Context, field graphql
 	}
 	res := resTmp.(*model.Comment)
 	fc.Result = res
-	return ec.marshalNComment2ᚖgraphqlᚑcommentᚑsystemᚋgraphᚋmodelᚐComment(ctx, field.Selections, res)
+	return ec.marshalNComment2ᚖgraphqlᚑcommentᚑsystemᚋappᚋgraphᚋmodelᚐComment(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_CommentEdge_node(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1489,7 +1489,7 @@ func (ec *executionContext) _Mutation_createPost(ctx context.Context, field grap
 	}
 	res := resTmp.(*model.Post)
 	fc.Result = res
-	return ec.marshalNPost2ᚖgraphqlᚑcommentᚑsystemᚋgraphᚋmodelᚐPost(ctx, field.Selections, res)
+	return ec.marshalNPost2ᚖgraphqlᚑcommentᚑsystemᚋappᚋgraphᚋmodelᚐPost(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_createPost(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1560,7 +1560,7 @@ func (ec *executionContext) _Mutation_createComment(ctx context.Context, field g
 	}
 	res := resTmp.(*model.Comment)
 	fc.Result = res
-	return ec.marshalNComment2ᚖgraphqlᚑcommentᚑsystemᚋgraphᚋmodelᚐComment(ctx, field.Selections, res)
+	return ec.marshalNComment2ᚖgraphqlᚑcommentᚑsystemᚋappᚋgraphᚋmodelᚐComment(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_createComment(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -2067,7 +2067,7 @@ func (ec *executionContext) _Post_comments(ctx context.Context, field graphql.Co
 	}
 	res := resTmp.(*model.CommentConnection)
 	fc.Result = res
-	return ec.marshalNCommentConnection2ᚖgraphqlᚑcommentᚑsystemᚋgraphᚋmodelᚐCommentConnection(ctx, field.Selections, res)
+	return ec.marshalNCommentConnection2ᚖgraphqlᚑcommentᚑsystemᚋappᚋgraphᚋmodelᚐCommentConnection(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Post_comments(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -2128,7 +2128,7 @@ func (ec *executionContext) _PostConnection_edges(ctx context.Context, field gra
 	}
 	res := resTmp.([]*model.PostEdge)
 	fc.Result = res
-	return ec.marshalNPostEdge2ᚕᚖgraphqlᚑcommentᚑsystemᚋgraphᚋmodelᚐPostEdgeᚄ(ctx, field.Selections, res)
+	return ec.marshalNPostEdge2ᚕᚖgraphqlᚑcommentᚑsystemᚋappᚋgraphᚋmodelᚐPostEdgeᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_PostConnection_edges(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -2178,7 +2178,7 @@ func (ec *executionContext) _PostConnection_pageInfo(ctx context.Context, field 
 	}
 	res := resTmp.(*model.PageInfo)
 	fc.Result = res
-	return ec.marshalNPageInfo2ᚖgraphqlᚑcommentᚑsystemᚋgraphᚋmodelᚐPageInfo(ctx, field.Selections, res)
+	return ec.marshalNPageInfo2ᚖgraphqlᚑcommentᚑsystemᚋappᚋgraphᚋmodelᚐPageInfo(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_PostConnection_pageInfo(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -2232,7 +2232,7 @@ func (ec *executionContext) _PostEdge_node(ctx context.Context, field graphql.Co
 	}
 	res := resTmp.(*model.Post)
 	fc.Result = res
-	return ec.marshalNPost2ᚖgraphqlᚑcommentᚑsystemᚋgraphᚋmodelᚐPost(ctx, field.Selections, res)
+	return ec.marshalNPost2ᚖgraphqlᚑcommentᚑsystemᚋappᚋgraphᚋmodelᚐPost(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_PostEdge_node(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -2333,7 +2333,7 @@ func (ec *executionContext) _Query_post(ctx context.Context, field graphql.Colle
 	}
 	res := resTmp.(*model.Post)
 	fc.Result = res
-	return ec.marshalOPost2ᚖgraphqlᚑcommentᚑsystemᚋgraphᚋmodelᚐPost(ctx, field.Selections, res)
+	return ec.marshalOPost2ᚖgraphqlᚑcommentᚑsystemᚋappᚋgraphᚋmodelᚐPost(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_post(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -2404,7 +2404,7 @@ func (ec *executionContext) _Query_posts(ctx context.Context, field graphql.Coll
 	}
 	res := resTmp.(*model.PostConnection)
 	fc.Result = res
-	return ec.marshalNPostConnection2ᚖgraphqlᚑcommentᚑsystemᚋgraphᚋmodelᚐPostConnection(ctx, field.Selections, res)
+	return ec.marshalNPostConnection2ᚖgraphqlᚑcommentᚑsystemᚋappᚋgraphᚋmodelᚐPostConnection(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_posts(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -2462,7 +2462,7 @@ func (ec *executionContext) _Query_comment(ctx context.Context, field graphql.Co
 	}
 	res := resTmp.(*model.Comment)
 	fc.Result = res
-	return ec.marshalOComment2ᚖgraphqlᚑcommentᚑsystemᚋgraphᚋmodelᚐComment(ctx, field.Selections, res)
+	return ec.marshalOComment2ᚖgraphqlᚑcommentᚑsystemᚋappᚋgraphᚋmodelᚐComment(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_comment(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -5666,11 +5666,11 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 	return res
 }
 
-func (ec *executionContext) marshalNComment2graphqlᚑcommentᚑsystemᚋgraphᚋmodelᚐComment(ctx context.Context, sel ast.SelectionSet, v model.Comment) graphql.Marshaler {
+func (ec *executionContext) marshalNComment2graphqlᚑcommentᚑsystemᚋappᚋgraphᚋmodelᚐComment(ctx context.Context, sel ast.SelectionSet, v model.Comment) graphql.Marshaler {
 	return ec._Comment(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNComment2ᚖgraphqlᚑcommentᚑsystemᚋgraphᚋmodelᚐComment(ctx context.Context, sel ast.SelectionSet, v *model.Comment) graphql.Marshaler {
+func (ec *executionContext) marshalNComment2ᚖgraphqlᚑcommentᚑsystemᚋappᚋgraphᚋmodelᚐComment(ctx context.Context, sel ast.SelectionSet, v *model.Comment) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -5680,11 +5680,11 @@ func (ec *executionContext) marshalNComment2ᚖgraphqlᚑcommentᚑsystemᚋgrap
 	return ec._Comment(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNCommentConnection2graphqlᚑcommentᚑsystemᚋgraphᚋmodelᚐCommentConnection(ctx context.Context, sel ast.SelectionSet, v model.CommentConnection) graphql.Marshaler {
+func (ec *executionContext) marshalNCommentConnection2graphqlᚑcommentᚑsystemᚋappᚋgraphᚋmodelᚐCommentConnection(ctx context.Context, sel ast.SelectionSet, v model.CommentConnection) graphql.Marshaler {
 	return ec._CommentConnection(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNCommentConnection2ᚖgraphqlᚑcommentᚑsystemᚋgraphᚋmodelᚐCommentConnection(ctx context.Context, sel ast.SelectionSet, v *model.CommentConnection) graphql.Marshaler {
+func (ec *executionContext) marshalNCommentConnection2ᚖgraphqlᚑcommentᚑsystemᚋappᚋgraphᚋmodelᚐCommentConnection(ctx context.Context, sel ast.SelectionSet, v *model.CommentConnection) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -5694,7 +5694,7 @@ func (ec *executionContext) marshalNCommentConnection2ᚖgraphqlᚑcommentᚑsys
 	return ec._CommentConnection(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNCommentEdge2ᚕᚖgraphqlᚑcommentᚑsystemᚋgraphᚋmodelᚐCommentEdgeᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.CommentEdge) graphql.Marshaler {
+func (ec *executionContext) marshalNCommentEdge2ᚕᚖgraphqlᚑcommentᚑsystemᚋappᚋgraphᚋmodelᚐCommentEdgeᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.CommentEdge) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -5718,7 +5718,7 @@ func (ec *executionContext) marshalNCommentEdge2ᚕᚖgraphqlᚑcommentᚑsystem
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNCommentEdge2ᚖgraphqlᚑcommentᚑsystemᚋgraphᚋmodelᚐCommentEdge(ctx, sel, v[i])
+			ret[i] = ec.marshalNCommentEdge2ᚖgraphqlᚑcommentᚑsystemᚋappᚋgraphᚋmodelᚐCommentEdge(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -5738,7 +5738,7 @@ func (ec *executionContext) marshalNCommentEdge2ᚕᚖgraphqlᚑcommentᚑsystem
 	return ret
 }
 
-func (ec *executionContext) marshalNCommentEdge2ᚖgraphqlᚑcommentᚑsystemᚋgraphᚋmodelᚐCommentEdge(ctx context.Context, sel ast.SelectionSet, v *model.CommentEdge) graphql.Marshaler {
+func (ec *executionContext) marshalNCommentEdge2ᚖgraphqlᚑcommentᚑsystemᚋappᚋgraphᚋmodelᚐCommentEdge(ctx context.Context, sel ast.SelectionSet, v *model.CommentEdge) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -5748,12 +5748,12 @@ func (ec *executionContext) marshalNCommentEdge2ᚖgraphqlᚑcommentᚑsystemᚋ
 	return ec._CommentEdge(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNCreateCommentInput2graphqlᚑcommentᚑsystemᚋgraphᚋmodelᚐCreateCommentInput(ctx context.Context, v any) (model.CreateCommentInput, error) {
+func (ec *executionContext) unmarshalNCreateCommentInput2graphqlᚑcommentᚑsystemᚋappᚋgraphᚋmodelᚐCreateCommentInput(ctx context.Context, v any) (model.CreateCommentInput, error) {
 	res, err := ec.unmarshalInputCreateCommentInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNCreatePostInput2graphqlᚑcommentᚑsystemᚋgraphᚋmodelᚐCreatePostInput(ctx context.Context, v any) (model.CreatePostInput, error) {
+func (ec *executionContext) unmarshalNCreatePostInput2graphqlᚑcommentᚑsystemᚋappᚋgraphᚋmodelᚐCreatePostInput(ctx context.Context, v any) (model.CreatePostInput, error) {
 	res, err := ec.unmarshalInputCreatePostInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
@@ -5773,7 +5773,7 @@ func (ec *executionContext) marshalNID2string(ctx context.Context, sel ast.Selec
 	return res
 }
 
-func (ec *executionContext) marshalNPageInfo2ᚖgraphqlᚑcommentᚑsystemᚋgraphᚋmodelᚐPageInfo(ctx context.Context, sel ast.SelectionSet, v *model.PageInfo) graphql.Marshaler {
+func (ec *executionContext) marshalNPageInfo2ᚖgraphqlᚑcommentᚑsystemᚋappᚋgraphᚋmodelᚐPageInfo(ctx context.Context, sel ast.SelectionSet, v *model.PageInfo) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -5783,11 +5783,11 @@ func (ec *executionContext) marshalNPageInfo2ᚖgraphqlᚑcommentᚑsystemᚋgra
 	return ec._PageInfo(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNPost2graphqlᚑcommentᚑsystemᚋgraphᚋmodelᚐPost(ctx context.Context, sel ast.SelectionSet, v model.Post) graphql.Marshaler {
+func (ec *executionContext) marshalNPost2graphqlᚑcommentᚑsystemᚋappᚋgraphᚋmodelᚐPost(ctx context.Context, sel ast.SelectionSet, v model.Post) graphql.Marshaler {
 	return ec._Post(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNPost2ᚖgraphqlᚑcommentᚑsystemᚋgraphᚋmodelᚐPost(ctx context.Context, sel ast.SelectionSet, v *model.Post) graphql.Marshaler {
+func (ec *executionContext) marshalNPost2ᚖgraphqlᚑcommentᚑsystemᚋappᚋgraphᚋmodelᚐPost(ctx context.Context, sel ast.SelectionSet, v *model.Post) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -5797,11 +5797,11 @@ func (ec *executionContext) marshalNPost2ᚖgraphqlᚑcommentᚑsystemᚋgraph�
 	return ec._Post(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNPostConnection2graphqlᚑcommentᚑsystemᚋgraphᚋmodelᚐPostConnection(ctx context.Context, sel ast.SelectionSet, v model.PostConnection) graphql.Marshaler {
+func (ec *executionContext) marshalNPostConnection2graphqlᚑcommentᚑsystemᚋappᚋgraphᚋmodelᚐPostConnection(ctx context.Context, sel ast.SelectionSet, v model.PostConnection) graphql.Marshaler {
 	return ec._PostConnection(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNPostConnection2ᚖgraphqlᚑcommentᚑsystemᚋgraphᚋmodelᚐPostConnection(ctx context.Context, sel ast.SelectionSet, v *model.PostConnection) graphql.Marshaler {
+func (ec *executionContext) marshalNPostConnection2ᚖgraphqlᚑcommentᚑsystemᚋappᚋgraphᚋmodelᚐPostConnection(ctx context.Context, sel ast.SelectionSet, v *model.PostConnection) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -5811,7 +5811,7 @@ func (ec *executionContext) marshalNPostConnection2ᚖgraphqlᚑcommentᚑsystem
 	return ec._PostConnection(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNPostEdge2ᚕᚖgraphqlᚑcommentᚑsystemᚋgraphᚋmodelᚐPostEdgeᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.PostEdge) graphql.Marshaler {
+func (ec *executionContext) marshalNPostEdge2ᚕᚖgraphqlᚑcommentᚑsystemᚋappᚋgraphᚋmodelᚐPostEdgeᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.PostEdge) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -5835,7 +5835,7 @@ func (ec *executionContext) marshalNPostEdge2ᚕᚖgraphqlᚑcommentᚑsystemᚋ
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNPostEdge2ᚖgraphqlᚑcommentᚑsystemᚋgraphᚋmodelᚐPostEdge(ctx, sel, v[i])
+			ret[i] = ec.marshalNPostEdge2ᚖgraphqlᚑcommentᚑsystemᚋappᚋgraphᚋmodelᚐPostEdge(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -5855,7 +5855,7 @@ func (ec *executionContext) marshalNPostEdge2ᚕᚖgraphqlᚑcommentᚑsystemᚋ
 	return ret
 }
 
-func (ec *executionContext) marshalNPostEdge2ᚖgraphqlᚑcommentᚑsystemᚋgraphᚋmodelᚐPostEdge(ctx context.Context, sel ast.SelectionSet, v *model.PostEdge) graphql.Marshaler {
+func (ec *executionContext) marshalNPostEdge2ᚖgraphqlᚑcommentᚑsystemᚋappᚋgraphᚋmodelᚐPostEdge(ctx context.Context, sel ast.SelectionSet, v *model.PostEdge) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -6159,7 +6159,7 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 	return res
 }
 
-func (ec *executionContext) marshalOComment2ᚖgraphqlᚑcommentᚑsystemᚋgraphᚋmodelᚐComment(ctx context.Context, sel ast.SelectionSet, v *model.Comment) graphql.Marshaler {
+func (ec *executionContext) marshalOComment2ᚖgraphqlᚑcommentᚑsystemᚋappᚋgraphᚋmodelᚐComment(ctx context.Context, sel ast.SelectionSet, v *model.Comment) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -6198,7 +6198,7 @@ func (ec *executionContext) marshalOInt2ᚖint32(ctx context.Context, sel ast.Se
 	return res
 }
 
-func (ec *executionContext) marshalOPost2ᚖgraphqlᚑcommentᚑsystemᚋgraphᚋmodelᚐPost(ctx context.Context, sel ast.SelectionSet, v *model.Post) graphql.Marshaler {
+func (ec *executionContext) marshalOPost2ᚖgraphqlᚑcommentᚑsystemᚋappᚋgraphᚋmodelᚐPost(ctx context.Context, sel ast.SelectionSet, v *model.Post) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}

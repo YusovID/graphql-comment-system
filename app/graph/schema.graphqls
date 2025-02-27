@@ -1,11 +1,11 @@
-  type Post {
+type Post {
     id: ID!
     author: String!
     title: String!
     content: String!
     createdAt: String!
     allowComments: Boolean!
-    comments(first: Int, after: String): CommentConnection!
+    comments(first: Int, after: String): CommentConnection! # Позволяет получить комментарии к посту с пагинацией.
   }
 
   type PostConnection{
@@ -31,9 +31,9 @@
     content: String!
     createdAt: String!
     postId: ID!
-    post: Post!
-    parentId: ID
-    replies(first: Int, after: String): CommentConnection!
+    post: Post! # Пост, к которому относится комментарий.
+    parentId: ID # ID родительского комментария (для ответов на комментарии). Может быть null, если комментарий корневой.
+    replies(first: Int, after: String): CommentConnection! # Позволяет получить ответы на комментарий с пагинацией.
   }
 
   type CommentConnection {
@@ -47,14 +47,14 @@
   }
 
   type Query {
-    post(id: ID!): Post
-    posts(first: Int, after: String): PostConnection!
-    comment(id: ID!): Comment
+    post(id: ID!): Post # Запрос для получения одного поста по его ID.
+    posts(first: Int, after: String): PostConnection! # Запрос для получения списка постов с пагинацией.
+    comment(id: ID!): Comment # Запрос для получения одного комментария по его ID.
   }
 
   type Mutation{
-    createPost(input: CreatePostInput!): Post!
-    createComment(input: CreateCommentInput!): Comment!
+    createPost(input: CreatePostInput!): Post! # Мутация для создания нового поста.
+    createComment(input: CreateCommentInput!): Comment! # Мутация для создания нового комментария.
   }
 
   input CreatePostInput{
@@ -65,8 +65,8 @@
   }
 
   input CreateCommentInput{
-    postId: ID!
+    postId: ID! # ID поста, к которому относится комментарий.
     author: String!
     content: String!
-    parentId: ID
+    parentId: ID # ID родительского комментария, если это ответ. Может быть null для корневых комментариев.
   }
