@@ -29,7 +29,7 @@ func (r *commentResolver) Replies(ctx context.Context, obj *model.Comment, first
 	if first != nil {
 		n = int32(*first)
 	}
-	result, err := r.Resolver.CommentStore.GetRepliesForComment(ctx, obj.ID, n, after) // Используем новую функцию GetRepliesForComment
+	result, err := r.Resolver.CommentStore.GetRepliesForComment(ctx, obj.ID, n, after)
 	if err != nil {
 		return nil, err
 	}
@@ -66,7 +66,6 @@ func (r *commentResolver) Replies(ctx context.Context, obj *model.Comment, first
 
 // CreatePost is the resolver for the createPost field.
 func (r *mutationResolver) CreatePost(ctx context.Context, input model.CreatePostInput) (*model.Post, error) {
-	// Валидация входных данных
 	validationErrors := validator.ValidateCreatePostInput(ctx, input.Title, input.Author, input.Content)
 	if len(validationErrors) > 0 {
 		var errorMessages []string
@@ -77,22 +76,22 @@ func (r *mutationResolver) CreatePost(ctx context.Context, input model.CreatePos
 	}
 
 	post := &model.Post{
-		//TODO: Use UUIDs for IDs
-
 		ID:            inmemory.GetNextPostID(),
 		Author:        input.Author,
-		Content:       input.Content,
 		Title:         input.Title,
+		Content:       input.Content,
 		CreatedAt:     time.Now().Format(time.RFC3339),
 		AllowComments: input.AllowComments,
 	}
-	r.Resolver.PostStore.AddPost(ctx, post)
+	err := r.Resolver.PostStore.AddPost(ctx, post)
+	if err != nil {
+		return nil, fmt.Errorf("error creating post: %w", err)
+	}
 	return post, nil
 }
 
 // CreateComment is the resolver for the createComment field.
 func (r *mutationResolver) CreateComment(ctx context.Context, input model.CreateCommentInput) (*model.Comment, error) {
-	// Валидация входных данных
 	validationErrors := validator.ValidateCreateCommentInput(r.PostStore, r.CommentStore, ctx, input.Author, input.Content, input.PostID, input.ParentID)
 	if len(validationErrors) > 0 {
 		var errorMessages []string
@@ -103,19 +102,17 @@ func (r *mutationResolver) CreateComment(ctx context.Context, input model.Create
 	}
 
 	comment := &model.Comment{
-		//TODO: Use UUIDs for IDs
 		ID:        inmemory.GetNextCommentID(),
+		PostID:    input.PostID,
 		Author:    input.Author,
 		Content:   input.Content,
-		PostID:    input.PostID,
 		CreatedAt: time.Now().Format(time.RFC3339),
+		ParentID:  input.ParentID,
 	}
-
-	if input.ParentID != nil {
-		comment.ParentID = input.ParentID
+	err := r.Resolver.CommentStore.AddComment(ctx, comment)
+	if err != nil {
+		return nil, fmt.Errorf("error creating comment: %w", err)
 	}
-
-	r.Resolver.CommentStore.AddComment(ctx, comment)
 	return comment, nil
 }
 
